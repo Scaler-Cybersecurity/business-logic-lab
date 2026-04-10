@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ShopEase - Online Store</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background: #f5f5f5;
+  color: #1a1a1a;
+  line-height: 1.5;
+}
+
+/* Navigation */
+.nav {
+  background: #fff;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  height: 56px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav-logo {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-right: 40px;
+  letter-spacing: -0.3px;
+}
+
+.nav-tabs {
+  display: flex;
+  gap: 0;
+  height: 100%;
+}
+
+.nav-tab {
+  padding: 0 20px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
+  cursor: pointer;
+  border: none;
+  background: none;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.nav-tab:hover { color: #1a1a1a; }
+.nav-tab.active { color: #1a1a1a; border-bottom-color: #1a1a1a; }
+
+/* Scenario containers */
+.scenario { display: none; max-width: 960px; margin: 32px auto; padding: 0 24px; }
+.scenario.active { display: block; }
+
+/* Cards */
+.card {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 28px;
+  margin-bottom: 20px;
+}
+
+.card-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.card-subtitle {
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 20px;
+}
+
+/* Form elements */
+input[type="text"],
+input[type="number"] {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d0d0d0;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+input:focus { border-color: #333; }
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s;
+}
+
+.btn-primary { background: #1a1a1a; color: #fff; }
+.btn-primary:hover { background: #333; }
+.btn-secondary { background: #f0f0f0; color: #1a1a1a; }
+.btn-secondary:hover { background: #e4e4e4; }
+.btn-danger { background: #dc3545; color: #fff; }
+.btn-danger:hover { background: #c82333; }
+
+/* Tables */
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid #eee; font-size: 14px; }
+th { font-weight: 600; color: #555; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* Price display */
+.price { font-size: 28px; font-weight: 700; color: #1a1a1a; }
+.price-original { text-decoration: line-through; color: #999; font-size: 16px; margin-left: 8px; font-weight: 400; }
+.price-row { display: flex; align-items: baseline; gap: 8px; }
+
+/* Flag display */
+.flag-display {
+  display: none;
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 20px;
+  text-align: center;
+}
+
+.flag-display.visible { display: block; }
+
+.flag-text {
+  font-family: 'Courier New', monospace;
+  font-size: 18px;
+  font-weight: 700;
+  color: #166534;
+  word-break: break-all;
+}
+
+/* Layout helpers */
+.flex { display: flex; }
+.flex-between { display: flex; justify-content: space-between; align-items: center; }
+.gap-12 { gap: 12px; }
+.gap-8 { gap: 8px; }
+.mt-16 { margin-top: 16px; }
+.mt-12 { margin-top: 12px; }
+.mb-8 { margin-bottom: 8px; }
+
+/* Input group */
+.input-group { display: flex; gap: 8px; }
+.input-group input { flex: 1; }
+
+/* Status messages */
+.msg {
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  margin-top: 12px;
+}
+.msg-success { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+.msg-error { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+.msg-info { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
+
+/* Product image placeholder */
+.product-img {
+  width: 100%;
+  height: 200px;
+  background: #f8f8f8;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #bbb;
+  font-size: 48px;
+  margin-bottom: 16px;
+  border: 1px solid #eee;
+}
+
+/* Stock badge */
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.badge-warning { background: #fef3c7; color: #92400e; }
+.badge-success { background: #d1fae5; color: #065f46; }
+.badge-danger { background: #fee2e2; color: #991b1b; }
+
+/* Quantity input */
+.qty-input {
+  width: 80px !important;
+  text-align: center;
+}
+
+/* Divider */
+.divider { height: 1px; background: #eee; margin: 16px 0; }
+
+/* Order summary */
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  font-size: 14px;
+}
+.summary-total {
+  font-weight: 700;
+  font-size: 16px;
+  border-top: 2px solid #1a1a1a;
+  padding-top: 12px;
+  margin-top: 4px;
+}
+
+/* Notification toast */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: #1a1a1a;
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 13px;
+  transform: translateY(80px);
+  opacity: 0;
+  transition: transform 0.25s, opacity 0.25s;
+  z-index: 200;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+
+/* Responsive */
+@media (max-width: 640px) {
+  .nav { padding: 0 16px; }
+  .nav-tab { padding: 0 12px; font-size: 13px; }
+  .scenario { padding: 0 16px; margin: 20px auto; }
+  .card { padding: 20px; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-logo">ShopEase</div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="switchTab(0)">Checkout</button>
+    <button class="nav-tab" onclick="switchTab(1)">Cart</button>
+    <button class="nav-tab" onclick="switchTab(2)">Limited Drop</button>
+    <button class="nav-tab" onclick="switchTab(3)">Promotions</button>
+  </div>
+</nav>
+
+<!-- ==================== SCENARIO 1: Coupon Abuse ==================== -->
+<div class="scenario active" id="scenario1">
+  <div class="card">
+    <div class="flex-between mb-8">
+      <div>
+        <div class="card-title">Order Summary</div>
+        <div class="card-subtitle">Review your order before placing it</div>
+      </div>
+      <div>
+        <span class="badge badge-success">Free Shipping</span>
+      </div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Qty</th>
+          <th style="text-align:right">Price</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Wireless Noise-Cancelling Headphones</td>
+          <td>1</td>
+          <td style="text-align:right">$200.00</td>
+        </tr>
+        <tr>
+          <td>USB-C Charging Cable</td>
+          <td>2</td>
+          <td style="text-align:right">$30.00</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="divider"></div>
+
+    <div class="summary-row"><span>Subtotal</span><span>$230.00</span></div>
+    <div class="summary-row"><span>Shipping</span><span>Free</span></div>
+    <div class="summary-row" id="s1-discount-row" style="display:none;color:#059669"><span>Discount</span><span id="s1-discount-amount"></span></div>
+    <div class="summary-row summary-total"><span>Total</span><span id="s1-total">$230.00</span></div>
+
+    <div class="mt-16">
+      <label style="font-size:13px;font-weight:500;color:#555;display:block;margin-bottom:6px">Coupon Code</label>
+      <div class="input-group">
+        <input type="text" id="s1-coupon" placeholder="Enter coupon code">
+        <button class="btn btn-primary" onclick="s1ApplyCoupon()">Apply</button>
+      </div>
+      <div id="s1-msg"></div>
+    </div>
+
+    <div class="mt-16">
+      <button class="btn btn-primary" style="width:100%" onclick="s1PlaceOrder()">Place Order</button>
+    </div>
+
+    <div class="flag-display" id="s1-flag">
+      <div style="font-size:13px;color:#555;margin-bottom:6px">Order Confirmation Code</div>
+      <div class="flag-text">Flag{Scaler_C0up0n_St4ck3d}</div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SCENARIO 2: Negative Quantity ==================== -->
+<div class="scenario" id="scenario2">
+  <div class="card">
+    <div class="card-title">Shopping Cart</div>
+    <div class="card-subtitle">2 items in your cart</div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Unit Price</th>
+          <th style="width:100px">Quantity</th>
+          <th style="text-align:right">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Mechanical Keyboard (RGB)</td>
+          <td>$150.00</td>
+          <td><input type="number" class="qty-input" id="s2-qty1" value="1" onchange="s2Update()"></td>
+          <td style="text-align:right" id="s2-line1">$150.00</td>
+        </tr>
+        <tr>
+          <td>Ergonomic Mouse Pad</td>
+          <td>$25.00</td>
+          <td><input type="number" class="qty-input" id="s2-qty2" value="1" onchange="s2Update()"></td>
+          <td style="text-align:right" id="s2-line2">$25.00</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="divider"></div>
+
+    <div class="summary-row"><span>Subtotal</span><span id="s2-subtotal">$175.00</span></div>
+    <div class="summary-row"><span>Tax (8%)</span><span id="s2-tax">$14.00</span></div>
+    <div class="summary-row summary-total"><span>Total</span><span id="s2-total">$189.00</span></div>
+
+    <div class="mt-16">
+      <button class="btn btn-primary" style="width:100%" onclick="s2Checkout()">Proceed to Checkout</button>
+    </div>
+
+    <div class="flag-display" id="s2-flag">
+      <div style="font-size:13px;color:#555;margin-bottom:6px">Refund Confirmation</div>
+      <div class="flag-text">Flag{Scaler_N3g4t1v3_C4rt}</div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SCENARIO 3: Race Condition (Inventory) ==================== -->
+<div class="scenario" id="scenario3">
+  <div class="card">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+      <div>
+        <div class="product-img">&#128247;</div>
+      </div>
+      <div>
+        <div class="card-title">Limited Edition Smartwatch</div>
+        <div style="font-size:13px;color:#888;margin:4px 0 16px">Model X Pro &middot; Titanium Black</div>
+        <div class="price-row">
+          <span class="price">$499.00</span>
+        </div>
+        <div style="margin:16px 0">
+          <span class="badge badge-warning" id="s3-stock-badge">Only 1 left in stock</span>
+        </div>
+        <div style="font-size:13px;color:#666;margin-bottom:20px">
+          Ships within 1-2 business days. Free returns within 30 days.
+        </div>
+        <button class="btn btn-primary" style="width:100%" id="s3-buy-btn" onclick="s3Buy()">Buy Now</button>
+        <div id="s3-msg"></div>
+      </div>
+    </div>
+
+    <div class="flag-display" id="s3-flag">
+      <div style="font-size:13px;color:#555;margin-bottom:6px">System Error - Debug Token</div>
+      <div class="flag-text">Flag{Scaler_R4c3_0v3rBuy}</div>
+    </div>
+  </div>
+
+  <div class="card" id="s3-orders" style="display:none">
+    <div class="card-title">Your Orders</div>
+    <div class="card-subtitle">Recent purchases</div>
+    <table>
+      <thead>
+        <tr><th>Order #</th><th>Product</th><th>Status</th></tr>
+      </thead>
+      <tbody id="s3-order-list"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ==================== SCENARIO 4: Coupon Reuse Race Condition ==================== -->
+<div class="scenario" id="scenario4">
+  <div class="card">
+    <div class="flex-between mb-8">
+      <div>
+        <div class="card-title">Spring Promotion</div>
+        <div class="card-subtitle">Apply your one-time promotional credit</div>
+      </div>
+    </div>
+
+    <table>
+      <thead>
+        <tr><th>Item</th><th style="text-align:right">Price</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Annual Premium Subscription</td>
+          <td style="text-align:right">$120.00</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="divider"></div>
+
+    <div id="s4-applied-list"></div>
+
+    <div class="summary-row"><span>Subtotal</span><span>$120.00</span></div>
+    <div class="summary-row" id="s4-discount-row" style="display:none;color:#059669"><span>Promo Credits</span><span id="s4-discount-amount"></span></div>
+    <div class="summary-row summary-total"><span>Total</span><span id="s4-total">$120.00</span></div>
+
+    <div class="mt-16">
+      <label style="font-size:13px;font-weight:500;color:#555;display:block;margin-bottom:6px">Promo Code</label>
+      <div class="input-group">
+        <input type="text" id="s4-promo" placeholder="Enter promo code">
+        <button class="btn btn-primary" id="s4-apply-btn" onclick="s4ApplyPromo()">Apply</button>
+      </div>
+      <div id="s4-msg"></div>
+    </div>
+
+    <div class="mt-16">
+      <button class="btn btn-primary" style="width:100%" onclick="s4Pay()">Pay Now</button>
+    </div>
+
+    <div class="flag-display" id="s4-flag">
+      <div style="font-size:13px;color:#555;margin-bottom:6px">Payment Anomaly Token</div>
+      <div class="flag-text">Flag{Scaler_Pr0m0_R4c3d}</div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============ Tab Navigation ============ */
+function switchTab(idx) {
+  document.querySelectorAll('.nav-tab').forEach(function(t, i) {
+    t.classList.toggle('active', i === idx);
+  });
+  document.querySelectorAll('.scenario').forEach(function(s, i) {
+    s.classList.toggle('active', i === idx);
+  });
+}
+
+function showToast(text) {
+  var t = document.getElementById('toast');
+  t.textContent = text;
+  t.classList.add('show');
+  setTimeout(function() { t.classList.remove('show'); }, 2500);
+}
+
+/* ============ Scenario 1: Coupon Abuse ============ */
+(function() {
+  var baseTotal = 230;
+  var currentTotal = 230;
+  var totalDiscount = 0;
+
+  window.s1ApplyCoupon = function() {
+    var code = document.getElementById('s1-coupon').value.trim().toUpperCase();
+    var msgEl = document.getElementById('s1-msg');
+
+    if (code !== 'SAVE50') {
+      msgEl.innerHTML = '<div class="msg msg-error">Invalid coupon code.</div>';
+      return;
+    }
+
+    var discount = currentTotal * 0.5;
+    currentTotal = currentTotal - discount;
+    totalDiscount = totalDiscount + discount;
+
+    document.getElementById('s1-discount-row').style.display = 'flex';
+    document.getElementById('s1-discount-amount').textContent = '-$' + totalDiscount.toFixed(2);
+    document.getElementById('s1-total').textContent = '$' + currentTotal.toFixed(2);
+    msgEl.innerHTML = '<div class="msg msg-success">Coupon SAVE50 applied! You saved $' + discount.toFixed(2) + '</div>';
+
+    showToast('Coupon applied successfully');
+
+    if (currentTotal < 10) {
+      document.getElementById('s1-flag').classList.add('visible');
+    }
+  };
+
+  window.s1PlaceOrder = function() {
+    if (currentTotal >= 10) {
+      showToast('Order placed! Total: $' + currentTotal.toFixed(2));
+    }
+  };
+})();
+
+/* ============ Scenario 2: Negative Quantity ============ */
+(function() {
+  var price1 = 150;
+  var price2 = 25;
+
+  window.s2Update = function() {
+    var qty1 = parseInt(document.getElementById('s2-qty1').value) || 0;
+    var qty2 = parseInt(document.getElementById('s2-qty2').value) || 0;
+
+    var line1 = price1 * qty1;
+    var line2 = price2 * qty2;
+    var subtotal = line1 + line2;
+    var tax = subtotal * 0.08;
+    var total = subtotal + tax;
+
+    document.getElementById('s2-line1').textContent = '$' + line1.toFixed(2);
+    document.getElementById('s2-line2').textContent = '$' + line2.toFixed(2);
+    document.getElementById('s2-subtotal').textContent = '$' + subtotal.toFixed(2);
+    document.getElementById('s2-tax').textContent = '$' + tax.toFixed(2);
+    document.getElementById('s2-total').textContent = '$' + total.toFixed(2);
+
+    if (total < 0) {
+      document.getElementById('s2-flag').classList.add('visible');
+    }
+  };
+
+  window.s2Checkout = function() {
+    var total = parseFloat(document.getElementById('s2-total').textContent.replace('$', ''));
+    if (total >= 0) {
+      showToast('Redirecting to payment...');
+    }
+  };
+})();
+
+/* ============ Scenario 3: Race Condition (Inventory) ============ */
+(function() {
+  var stock = 1;
+  var purchased = 0;
+  var orderNum = 1000;
+  var processing = false;
+
+  window.s3Buy = function() {
+    if (processing) {
+      // Simulate race condition: allow purchase to go through during processing
+      orderNum++;
+      purchased++;
+      addOrder(orderNum);
+      checkRace();
+      return;
+    }
+
+    if (stock <= 0 && !processing) {
+      document.getElementById('s3-msg').innerHTML = '<div class="msg msg-error">Sorry, this item is out of stock.</div>';
+      return;
+    }
+
+    processing = true;
+    document.getElementById('s3-buy-btn').textContent = 'Processing...';
+
+    // Simulate server delay — stock not yet decremented
+    setTimeout(function() {
+      stock--;
+      purchased++;
+      orderNum++;
+      processing = false;
+
+      addOrder(orderNum);
+
+      if (stock <= 0) {
+        document.getElementById('s3-stock-badge').textContent = 'Out of stock';
+        document.getElementById('s3-stock-badge').className = 'badge badge-danger';
+        document.getElementById('s3-buy-btn').textContent = 'Sold Out';
+        document.getElementById('s3-buy-btn').disabled = true;
+      } else {
+        document.getElementById('s3-buy-btn').textContent = 'Buy Now';
+      }
+
+      checkRace();
+    }, 1500);
+  };
+
+  function addOrder(num) {
+    var list = document.getElementById('s3-order-list');
+    var row = document.createElement('tr');
+    row.innerHTML = '<td>#' + num + '</td><td>Limited Edition Smartwatch</td><td><span class="badge badge-success">Confirmed</span></td>';
+    list.appendChild(row);
+    document.getElementById('s3-orders').style.display = 'block';
+    showToast('Order #' + num + ' confirmed');
+  }
+
+  function checkRace() {
+    if (purchased > 1) {
+      document.getElementById('s3-flag').classList.add('visible');
+    }
+  }
+})();
+
+/* ============ Scenario 4: Coupon Reuse Race Condition ============ */
+(function() {
+  var basePrice = 120;
+  var currentTotal = 120;
+  var promoValue = 25;
+  var timesApplied = 0;
+  var promoUsed = false;
+  var validating = false;
+
+  window.s4ApplyPromo = function() {
+    var code = document.getElementById('s4-promo').value.trim().toUpperCase();
+    var msgEl = document.getElementById('s4-msg');
+
+    if (code !== 'SPRING25') {
+      msgEl.innerHTML = '<div class="msg msg-error">Invalid promo code.</div>';
+      return;
+    }
+
+    // Vulnerability: check is done before async "mark as used"
+    if (promoUsed && !validating) {
+      msgEl.innerHTML = '<div class="msg msg-error">This promo code has already been used.</div>';
+      return;
+    }
+
+    // During validation window, allow reuse
+    if (!validating && !promoUsed) {
+      validating = true;
+      applyCredit(msgEl);
+
+      // Simulate async server-side "mark as used"
+      setTimeout(function() {
+        promoUsed = true;
+        validating = false;
+      }, 1000);
+    } else if (validating) {
+      // Race condition: still validating, not yet marked as used
+      applyCredit(msgEl);
+    }
+  };
+
+  function applyCredit(msgEl) {
+    timesApplied++;
+    currentTotal = currentTotal - promoValue;
+
+    document.getElementById('s4-discount-row').style.display = 'flex';
+    document.getElementById('s4-discount-amount').textContent = '-$' + (promoValue * timesApplied).toFixed(2);
+    document.getElementById('s4-total').textContent = '$' + currentTotal.toFixed(2);
+    msgEl.innerHTML = '<div class="msg msg-success">$25.00 promo credit applied!</div>';
+    showToast('Promo credit applied');
+
+    if (timesApplied >= 3) {
+      document.getElementById('s4-flag').classList.add('visible');
+    }
+  }
+
+  window.s4Pay = function() {
+    showToast('Processing payment of $' + currentTotal.toFixed(2));
+  };
+})();
+</script>
+
+</body>
+</html>
