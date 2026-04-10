@@ -38,19 +38,20 @@
 **Steps to Exploit:**
 
 1. Navigate to the **Cart** tab.
-2. For the **Mechanical Keyboard (RGB)** ($150.00), change the quantity to `-5` by either:
-   - Typing `-5` directly into the quantity input field, OR
-   - Using the minus stepper button to go below zero.
-3. The line total becomes `-$750.00`.
-4. The cart total (subtotal + tax + shipping) becomes negative.
-5. Once the total goes below **$0.00**, the flag is revealed.
+2. Notice the +/- stepper buttons next to each product's quantity. Clicking the minus button below 0 shows an error: *"Quantity cannot be less than 0."* -- this is the client-side validation.
+3. However, the input field itself is still editable. Click directly into the quantity input for **Mechanical Keyboard (RGB)** ($150.00).
+4. Select the current value and **manually type** `-5` using your keyboard.
+5. The line total becomes `-$750.00` and the cart total goes negative.
+6. Once the total goes below **$0.00**, the flag is revealed.
 
 **Alternative Approach:**
 
-- Set Keyboard qty to `-3` and Mouse Pad qty to `-3`.
+- Type `-3` into the Keyboard qty and `-3` into the Mouse Pad qty.
 - Any combination that results in a negative grand total works.
 
-**Root Cause:** The application does not validate that quantity values are positive integers. It blindly multiplies `price * quantity`, and negative quantities produce negative line totals. There is no `min="0"` enforcement on the input nor any server-side validation.
+**Key Insight:** The +/- buttons have proper validation and will not go below 0, but the raw input field has no such restriction. Typing a negative number directly bypasses the button-level check.
+
+**Root Cause:** The application validates quantity only in the button click handler (client-side UI guard), but not in the actual calculation logic. The input field itself accepts any typed value, and the total is computed as `price * quantity` without checking for positive values. This is a common pattern where UI-level guards give a false sense of security while the underlying logic remains exploitable.
 
 **Flag:** `Flag{Scaler_N3g4t1v3_C4rt}`
 
@@ -58,33 +59,7 @@
 
 ---
 
-## Task 3: Inventory Race Condition (Simulated)
-
-**Tab:** Limited Drop
-
-**Vulnerability:** When the "Buy Now" button is clicked, the application enters a 1.5-second "processing" state simulating a server delay. During this processing window, the stock has not yet been decremented, so additional clicks bypass the stock check and create additional orders.
-
-**Steps to Exploit:**
-
-1. Navigate to the **Limited Drop** tab.
-2. Note the stock badge says **"Only 1 left in stock"**.
-3. Click the **Buy Now** button.
-4. The button changes to **"Processing order..."** (1.5s delay).
-5. **While the button still says "Processing..."**, click it again rapidly (1-2 more times).
-6. Each click during the processing window creates a confirmed order.
-7. Once **more than 1 order** is confirmed (visible in the "Your Orders" table below), the flag is revealed.
-
-**Key Timing:** You must click during the ~1.5 second processing window. The race condition is between the stock check and the stock decrement.
-
-**Root Cause:** The application checks stock availability at the start of the request but does not lock the inventory during processing. The stock is only decremented after the async delay completes, creating a TOCTOU (Time-of-Check to Time-of-Use) vulnerability. Multiple concurrent requests can pass the stock check before any of them reduce the inventory.
-
-**Flag:** `Flag{Scaler_R4c3_0v3rBuy}`
-
-**Real-World Impact:** In real e-commerce systems without proper inventory locking, attackers can purchase more items than available stock by sending concurrent requests, leading to overselling and fulfillment issues.
-
----
-
-## Task 4: Coupon Reuse via Race Condition
+## Task 3: Coupon Reuse via Race Condition
 
 **Tab:** Promotions
 
@@ -102,7 +77,7 @@
 
 **Key Timing:** All clicks must happen within approximately 1 second of the first click. After 1 second, the promo is locked.
 
-**Root Cause:** The application has a classic TOCTOU race condition in its promo redemption logic. The "is this promo already used?" check and the "mark promo as used" action are not atomic. There is an async gap (simulating a database write or API call) between validating and marking, during which concurrent requests can slip through.
+**Root Cause:** The application has a classic TOCTOU (Time-of-Check to Time-of-Use) race condition in its promo redemption logic. The "is this promo already used?" check and the "mark promo as used" action are not atomic. There is an async gap (simulating a database write or API call) between validating and marking, during which concurrent requests can slip through.
 
 **Flag:** `Flag{Scaler_Pr0m0_R4c3d}`
 
@@ -112,9 +87,8 @@
 
 ## Summary Table
 
-| # | Scenario | Coupon/Action | Vulnerability Type | Flag |
-|---|----------|--------------|-------------------|------|
+| # | Tab | Coupon/Action | Vulnerability Type | Flag |
+|---|-----|--------------|-------------------|------|
 | 1 | Checkout | `SAVE50` | Missing duplicate coupon check | `Flag{Scaler_C0up0n_St4ck3d}` |
-| 2 | Cart | Set qty to negative | Missing input validation | `Flag{Scaler_N3g4t1v3_C4rt}` |
-| 3 | Limited Drop | Rapid clicks during processing | TOCTOU / Race condition | `Flag{Scaler_R4c3_0v3rBuy}` |
-| 4 | Promotions | `SPRING25` (rapid clicks) | TOCTOU / Race condition | `Flag{Scaler_Pr0m0_R4c3d}` |
+| 2 | Cart | Type negative qty via keyboard | Missing input validation | `Flag{Scaler_N3g4t1v3_C4rt}` |
+| 3 | Promotions | `SPRING25` (rapid clicks) | TOCTOU / Race condition | `Flag{Scaler_Pr0m0_R4c3d}` |

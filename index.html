@@ -448,95 +448,6 @@ tr:last-child td { border-bottom: none; }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* ===== Product Page ===== */
-.product-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 32px;
-}
-
-.product-gallery {
-  background: linear-gradient(145deg, #f8f9fb 0%, #eef1f5 100%);
-  border-radius: var(--radius-md);
-  aspect-ratio: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid var(--border);
-  position: relative;
-  overflow: hidden;
-}
-
-.product-gallery::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, transparent 60%, rgba(0,0,0,0.02) 100%);
-}
-
-.product-gallery svg { width: 72px; height: 72px; color: #c4c9d4; }
-
-.product-category {
-  font-size: 11.5px;
-  color: var(--primary);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  margin-bottom: 8px;
-}
-
-.product-title {
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--text-primary);
-  letter-spacing: -0.3px;
-  line-height: 1.25;
-  margin-bottom: 8px;
-}
-
-.product-sku {
-  font-size: 13px;
-  color: var(--text-tertiary);
-  margin-bottom: 16px;
-}
-
-.product-price {
-  font-size: 32px;
-  font-weight: 700;
-  color: var(--text-primary);
-  letter-spacing: -0.5px;
-  margin-bottom: 16px;
-}
-
-.product-rating {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: 20px;
-}
-.product-rating .stars { color: #f59e0b; font-size: 15px; letter-spacing: 1px; line-height: 1; }
-.product-rating .rating-text { font-size: 13px; color: var(--text-tertiary); }
-
-.product-features {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 16px 0;
-  border-top: 1px solid var(--border-light);
-  border-bottom: 1px solid var(--border-light);
-  margin-bottom: 20px;
-}
-
-.product-feature {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 13px;
-  color: var(--text-secondary);
-}
-
-.product-feature svg { width: 16px; height: 16px; color: var(--success); flex-shrink: 0; }
-
 /* ===== Toast ===== */
 .toast-container {
   position: fixed;
@@ -675,9 +586,7 @@ tr:last-child td { border-bottom: none; }
   .scenario { padding: 20px 16px 40px; }
   .card-body, .card-header, .card-footer, .summary { padding-left: 20px; padding-right: 20px; }
   .layout-2col { grid-template-columns: 1fr; }
-  .product-grid { grid-template-columns: 1fr; }
-  .product-gallery { aspect-ratio: 4/3; }
-  .nav-right { display: none; }
+.nav-right { display: none; }
 }
 
 @media (max-width: 480px) {
@@ -700,10 +609,6 @@ tr:last-child td { border-bottom: none; }
       <span>Cart</span>
     </button>
     <button class="nav-tab" onclick="switchTab(2)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-      <span>Limited Drop</span>
-    </button>
-    <button class="nav-tab" onclick="switchTab(3)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/></svg>
       <span>Promotions</span>
     </button>
@@ -868,6 +773,9 @@ tr:last-child td { border-bottom: none; }
             </tr>
           </tbody>
         </table>
+        <div style="padding:0 16px 16px">
+          <div id="s2-msg"></div>
+        </div>
       </div>
     </div>
 
@@ -907,99 +815,8 @@ tr:last-child td { border-bottom: none; }
   </div>
 </div>
 
-<!-- ==================== SCENARIO 3: Race Condition (Inventory) ==================== -->
+<!-- ==================== SCENARIO 3: Coupon Reuse Race Condition ==================== -->
 <div class="scenario" id="scenario3">
-  <div class="breadcrumb">
-    <a href="#">Home</a>
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-    <a href="#">Watches</a>
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-    <span>Limited Edition Smartwatch</span>
-  </div>
-
-  <div class="card">
-    <div class="card-body" style="padding:32px">
-      <div class="product-grid">
-        <div>
-          <div class="product-gallery">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/><path d="M9 1h6"/><path d="M12 1v2"/>
-            </svg>
-          </div>
-        </div>
-        <div>
-          <div class="product-category">Limited Edition</div>
-          <div class="product-title">Limited Edition Smartwatch</div>
-          <div class="product-sku">Model X Pro &middot; Titanium Black &middot; SKU: SW-XP-001</div>
-
-          <div class="product-rating">
-            <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
-            <span class="rating-text">4.9 (128 reviews)</span>
-          </div>
-
-          <div class="product-price">$499.00</div>
-
-          <div style="margin-bottom:20px">
-            <span class="badge badge-warning" id="s3-stock-badge">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-              Only 1 left in stock
-            </span>
-          </div>
-
-          <div class="product-features">
-            <div class="product-feature">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-              Free express shipping
-            </div>
-            <div class="product-feature">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-              30-day free returns
-            </div>
-            <div class="product-feature">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-              2-year manufacturer warranty
-            </div>
-          </div>
-
-          <button class="btn btn-primary btn-full btn-lg" id="s3-buy-btn" onclick="s3Buy()">
-            Buy Now &mdash; $499.00
-          </button>
-          <div id="s3-msg"></div>
-
-          <div class="flag-display" id="s3-flag">
-            <div class="flag-inner">
-              <div class="flag-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-              </div>
-              <div class="flag-content">
-                <div class="flag-label">System Debug Token</div>
-                <div class="flag-text">Flag{Scaler_R4c3_0v3rBuy}</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="card" id="s3-orders" style="display:none">
-    <div class="card-header">
-      <div>
-        <div class="card-title">Your Orders</div>
-        <div class="card-subtitle">Recent purchases from your account</div>
-      </div>
-    </div>
-    <table>
-      <thead>
-        <tr><th>Order ID</th><th>Product</th><th>Amount</th><th>Date</th><th>Status</th></tr>
-      </thead>
-      <tbody id="s3-order-list"></tbody>
-    </table>
-  </div>
-</div>
-
-<!-- ==================== SCENARIO 4: Coupon Reuse Race Condition ==================== -->
-<div class="scenario" id="scenario4">
   <div class="breadcrumb">
     <a href="#">Account</a>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
@@ -1046,10 +863,10 @@ tr:last-child td { border-bottom: none; }
         <div class="card-body">
           <label class="input-label">Promo Code</label>
           <div class="input-group">
-            <input type="text" id="s4-promo" placeholder="e.g. SPRING25" onkeydown="if(event.key==='Enter')s4ApplyPromo()">
-            <button class="btn btn-secondary" id="s4-apply-btn" onclick="s4ApplyPromo()">Redeem</button>
+            <input type="text" id="s3-promo" placeholder="e.g. SPRING25" onkeydown="if(event.key==='Enter')s3ApplyPromo()">
+            <button class="btn btn-secondary" id="s3-apply-btn" onclick="s3ApplyPromo()">Redeem</button>
           </div>
-          <div id="s4-msg"></div>
+          <div id="s3-msg"></div>
         </div>
       </div>
     </div>
@@ -1061,18 +878,18 @@ tr:last-child td { border-bottom: none; }
         </div>
         <div class="summary">
           <div class="summary-row"><span>Annual Premium Plan</span><span>$120.00</span></div>
-          <div class="summary-row discount" id="s4-discount-row" style="display:none"><span>Promo Credits</span><span id="s4-discount-amount"></span></div>
-          <div class="summary-row summary-total"><span>Amount Due</span><span id="s4-total">$120.00</span></div>
+          <div class="summary-row discount" id="s3-discount-row" style="display:none"><span>Promo Credits</span><span id="s3-discount-amount"></span></div>
+          <div class="summary-row summary-total"><span>Amount Due</span><span id="s3-total">$120.00</span></div>
         </div>
         <div class="card-footer" style="background:transparent">
-          <button class="btn btn-primary btn-full btn-lg" id="s4-pay-btn" onclick="s4Pay()">Pay Now</button>
+          <button class="btn btn-primary btn-full btn-lg" id="s3-pay-btn" onclick="s3Pay()">Pay Now</button>
           <div class="secure-badge">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
             256-bit SSL encryption
           </div>
         </div>
         <div style="padding:0 28px 20px">
-          <div class="flag-display" id="s4-flag">
+          <div class="flag-display" id="s3-flag">
             <div class="flag-inner">
               <div class="flag-icon">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
@@ -1153,12 +970,6 @@ function formatPrice(n) {
   return prefix + Math.abs(n).toFixed(2);
 }
 
-function getTodayFormatted() {
-  var d = new Date();
-  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  return months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
-}
-
 var svgCheck = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><polyline points="20 6 9 17 4 12"/></svg>';
 var svgX = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>';
 
@@ -1226,7 +1037,17 @@ var svgX = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-wi
 
   window.s2Adjust = function(id, delta) {
     var input = document.getElementById(id);
-    input.value = parseInt(input.value || 0) + delta;
+    var current = parseInt(input.value) || 0;
+    var next = current + delta;
+    var msgEl = document.getElementById('s2-msg');
+
+    if (next < 0) {
+      msgEl.innerHTML = '<div class="msg msg-error">' + svgX + ' Quantity cannot be less than 0.</div>';
+      return;
+    }
+
+    msgEl.innerHTML = '';
+    input.value = next;
     s2Update();
   };
 
@@ -1262,72 +1083,7 @@ var svgX = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-wi
   };
 })();
 
-/* ============ Scenario 3: Race Condition (Inventory) ============ */
-(function() {
-  var stock = 1;
-  var purchased = 0;
-  var orderNum = 84200;
-  var processing = false;
-
-  window.s3Buy = function() {
-    if (processing) {
-      orderNum++;
-      purchased++;
-      addOrder(orderNum);
-      checkRace();
-      return;
-    }
-
-    if (stock <= 0 && !processing) {
-      document.getElementById('s3-msg').innerHTML = '<div class="msg msg-error" style="margin-top:16px">' + svgX + ' This item is currently out of stock.</div>';
-      return;
-    }
-
-    processing = true;
-    var btn = document.getElementById('s3-buy-btn');
-    setButtonLoading(btn, true, 'Processing order...');
-
-    setTimeout(function() {
-      stock--;
-      purchased++;
-      orderNum++;
-      processing = false;
-
-      addOrder(orderNum);
-
-      if (stock <= 0) {
-        document.getElementById('s3-stock-badge').innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:12px;height:12px"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> Out of stock';
-        document.getElementById('s3-stock-badge').className = 'badge badge-danger';
-        btn.disabled = true;
-        btn.innerHTML = 'Sold Out';
-        btn.classList.remove('btn-primary');
-        btn.classList.add('btn-secondary');
-      } else {
-        setButtonLoading(btn, false, 'Buy Now — $499.00');
-      }
-
-      checkRace();
-    }, 1500);
-  };
-
-  function addOrder(num) {
-    var list = document.getElementById('s3-order-list');
-    var row = document.createElement('tr');
-    row.style.animation = 'msgIn 0.3s ease';
-    row.innerHTML = '<td class="td-price">#ORD-' + num + '</td><td><div class="td-product-name">Limited Edition Smartwatch</div><div class="td-product-desc">Titanium Black</div></td><td class="td-price">$499.00</td><td style="color:var(--text-tertiary);font-size:13px">' + getTodayFormatted() + '</td><td><span class="badge badge-success">' + svgCheck + ' Confirmed</span></td>';
-    list.insertBefore(row, list.firstChild);
-    document.getElementById('s3-orders').style.display = 'block';
-    showToast('Order #ORD-' + num + ' confirmed!', 'success');
-  }
-
-  function checkRace() {
-    if (purchased > 1) {
-      document.getElementById('s3-flag').classList.add('visible');
-    }
-  }
-})();
-
-/* ============ Scenario 4: Coupon Reuse Race Condition ============ */
+/* ============ Scenario 3: Coupon Reuse Race Condition ============ */
 (function() {
   var currentTotal = 120;
   var promoValue = 25;
@@ -1335,10 +1091,10 @@ var svgX = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-wi
   var promoUsed = false;
   var validating = false;
 
-  window.s4ApplyPromo = function() {
-    var code = document.getElementById('s4-promo').value.trim().toUpperCase();
-    var msgEl = document.getElementById('s4-msg');
-    var btn = document.getElementById('s4-apply-btn');
+  window.s3ApplyPromo = function() {
+    var code = document.getElementById('s3-promo').value.trim().toUpperCase();
+    var msgEl = document.getElementById('s3-msg');
+    var btn = document.getElementById('s3-apply-btn');
 
     if (!code) {
       msgEl.innerHTML = '<div class="msg msg-error">' + svgX + ' Please enter a promo code.</div>';
@@ -1376,20 +1132,20 @@ var svgX = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-wi
     timesApplied++;
     currentTotal = currentTotal - promoValue;
 
-    document.getElementById('s4-discount-row').style.display = 'flex';
-    document.getElementById('s4-discount-amount').textContent = '-' + formatPrice(promoValue * timesApplied);
-    document.getElementById('s4-total').textContent = formatPrice(currentTotal);
+    document.getElementById('s3-discount-row').style.display = 'flex';
+    document.getElementById('s3-discount-amount').textContent = '-' + formatPrice(promoValue * timesApplied);
+    document.getElementById('s3-total').textContent = formatPrice(currentTotal);
     msgEl.innerHTML = '<div class="msg msg-success">' + svgCheck + ' $25.00 promotional credit applied to your account.</div>';
 
     showToast('Promotional credit applied', 'success');
 
     if (timesApplied >= 3) {
-      document.getElementById('s4-flag').classList.add('visible');
+      document.getElementById('s3-flag').classList.add('visible');
     }
   }
 
-  window.s4Pay = function() {
-    var btn = document.getElementById('s4-pay-btn');
+  window.s3Pay = function() {
+    var btn = document.getElementById('s3-pay-btn');
     setButtonLoading(btn, true, 'Processing payment...');
 
     setTimeout(function() {
